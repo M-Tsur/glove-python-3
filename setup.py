@@ -5,7 +5,7 @@ import subprocess
 import sys
 
 from setuptools import Command, Extension, setup, find_packages
-from setuptools.command.test import test as TestCommand
+# from setuptools.command.test import test as TestCommand
 
 
 def define_extensions(cythonize=False):
@@ -116,15 +116,15 @@ class Clean(Command):
         subprocess.call(['rm', os.path.join(pth, 'glove', 'glove_cython.so')])
 
 
-class PyTest(TestCommand):
+class PyTest():
     user_options = [('pytest-args=', 'a', "Arguments to pass to py.test")]
 
     def initialize_options(self):
-        TestCommand.initialize_options(self)
+        # TestCommand.initialize_options(self)
         self.pytest_args = ['tests/']
 
     def finalize_options(self):
-        TestCommand.finalize_options(self)
+        # TestCommand.finalize_options(self)
         self.test_args = []
         self.test_suite = True
 
@@ -143,14 +143,16 @@ setup(
     long_description='',
     packages=find_packages(),
     install_requires=['numpy', 'scipy'],
-    tests_require=['pytest'],
+    extras_require={
+        'test': ['pytest>=3.7'],
+    },
     cmdclass={'test': PyTest, 'cythonize': Cythonize, 'clean': Clean},
     author='Maciej Kula',
     url='https://github.com/maciejkula/glove-python',
     download_url='https://github.com/maciejkula/glove-python/tarball/0.1.0',
     license='Apache 2.0',
-    classifiers=['Development Status :: 3 - Alpha',
-                 'License :: OSI Approved :: Apache Software License',
-                 'Topic :: Scientific/Engineering :: Artificial Intelligence'],
+    # classifiers=['Development Status :: 3 - Alpha',
+    #              'License :: OSI Approved :: Apache Software License',
+    #              'Topic :: Scientific/Engineering :: Artificial Intelligence'],
     ext_modules=define_extensions()
 )
